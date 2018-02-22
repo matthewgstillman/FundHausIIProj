@@ -1,0 +1,38 @@
+body{
+    background-color: #002B5C;
+    color:#F9A01B;
+}
+
+.container{
+     background: linear-gradient(#fedd17, #fdd10b, #fad10c, #ffa43b, #ff843f, #f84938, #fe4f3d, #fe4c40, #f42a39, #ee343c, #d9333b, #8d3639, #442b31);
+     color:white;
+     border-radius: 10px;
+     margin-bottom: 10px;
+}
+
+a{
+    color: white;
+}
+
+
+li a{
+    color:#F9A01B;
+}
+
+
+.white_text{
+    color: white;
+}
+
+.white_text p{
+    color: white;
+}
+
+.white-space{
+    color: white;
+}
+
+
+.hidden_text{
+   color: #8d3639;
+}

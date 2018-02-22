@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>fundHaus</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'style.css' %}" type="text/css">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+       <h1>fundHaus</h1>
+       <h5><a href="/logout">Logout</a></h5>
+       <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">Home</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/signup">Sign Up/Sign In<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/createproject">Start New Project</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Projects
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/projects">Projects</a>
+          <a class="dropdown-item" href="/trending">Trending Projects</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+    <ul>
+        <li>Welcome to fundHaus!</li>
+        {% if messages %}
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        {% endif %}
+        <a href="/signin">Returning User? Sign In Here!</a>
+    </ul>
+    <div class="container">
+            <form action="/register" method="post" class="form-horizontal" role="form">
+            {% csrf_token %}
+                <h2>Registration Form</h2>
+                <br>
+                <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">First Name</label>
+                    <div class="col-sm-12">
+                        <input type="text" id="firstName" name="firstName" placeholder="First Name" class="form-control" autofocus>
+                    </div>
+                </div>
+                    <div class="form-group">
+                    <label for="lastName" class="col-sm-3 control-label">Last Name</label>
+                    <div class="col-sm-12">
+                        <input type="text" id="lastName" name="lastName"  placeholder="Last Name" class="form-control" autofocus>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="userName" class="col-sm-3 control-label">Username</label>
+                    <div class="col-sm-12">
+                        <input type="text" id="userName" name="userName" placeholder="Username" class="form-control" autofocus>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-12">
+                        <input type="email" name="email" id="email"placeholder="Email" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-3 control-label">Password</label>
+                    <div class="col-sm-12">
+                        <input type="password" id="password" name="password" placeholder="Password" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="pwConfirm" class="col-sm-3 control-label">Confirm Password</label>
+                    <div class="col-sm-12">
+                        <input type="password" id="pwConfirm" name="pwConfirm" 
+                        placeholder="pwConfirm" class="form-control">
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                    </div>
+                </div>
+                <br>
+                <!--</div>  /.form-group -->
+                        </div>
+                    </div>
+                </div> <!-- /.form-group -->
+                
+                    </div>
+                </div> <!-- /.form-group -->
+                    </div>
+                </div> <!-- /.form-group -->
+                </div>
+            </form> <!-- /form -->
+        </div> <!-- ./container -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    </body>
+</html>
