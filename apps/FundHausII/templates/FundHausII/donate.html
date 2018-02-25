@@ -49,7 +49,7 @@
         <h3>Project Title: {{ project.title }}</h3>
         <h3>About: {{ project.about }}</h3>
         <h3>Project Goal: ${{ project.goal }}</h3>
-        <form action="/newdonation" method="post" class="form-horizontal" role="form">
+        <form action="/project/{{project.id}}/donate" method="post" class="form-horizontal" role="form">
         {% csrf_token %}
         <div class="form-group">
                     <label for="donation" class="col-sm-3 control-label">Donate to Project</label>

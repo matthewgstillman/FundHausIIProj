@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models 
+from django.db.models import F
 from PIL import Image
 
 import md5
@@ -159,26 +160,26 @@ class Project(models.Model):
     progress = models.IntegerField(default=0)
     percentage = models.FloatField(null=True, blank=True)
     picture = models.ImageField(upload_to="project_image", blank=True)
-    # Above Line doesn't work
+    # Changed Above Line to "media/project_image" instead of just /project_image
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = ProjectManager()
 
     def __unicode__(self):
-        return "id: " + str(self.id) + ", Project Title: " + str(self.title) + ", About Project: " + str(self.about) + ", Goal: $" + str(self.goal) + ", Progress: $" + str(self.progress) + ", Percentage:" + str(self.percentage)
+        return "id: " + str(self.id) + ", Project Title: " + str(self.title) + ", About Project: " + str(self.about) + ", Project Picture: " + str(self.picture) + ", Goal: $" + str(self.goal) + ", Progress: $" + str(self.progress) + ", Percentage:" + str(self.percentage)
 
 
 # Brand New Donation Model To Test Out
 
 class DonationManager(models.Manager):
-    def donate(self, postData, userid, project_id):
+    def donate(self, postData, user_id, project_id):
         messages = []
         
         # current_project = Project.objects.get(id=project_id)
         #Changing Above Query into a Donation object class QuerySet(models.QuerySet)
-        current_project = Donation.objects.get(campaign_id=project_id)
+        current_project = Project.objects.get(id=project_id)
         print "Current Project to Donate To: {}".format(current_project)
-        current_user = Donation.objects.get(user_donor_id=userid)
+        current_user = User.objects.get(id=user_id)
         #Changing Below Query into a Donation object class QuerySet(models.QuerySet)
         # current_user = User.objects.get(id=userid)
         print "Current User: {}".format(current_user)
@@ -187,15 +188,12 @@ class DonationManager(models.Manager):
 
         #New code added 
         donations_list = []
-
         if len(str(donation)) < 1:
             messages.append("Donation must be an amount greater than 0!")
         if not messages:
-            donations_list.append("Current User: " + current_user +  ", Current Donation: " + donation + "Current Project: " + current_project)
+            # donations_list.append("Current User: " + current_user +  ", Current Donation: " + donation + "Current Project: " + current_project)
             self.create(donor=current_user, amount=donation, campaign=current_project)
-            Project.objects.get(id=project_id).update(progress=int(progress) + int((postData['donation'])))
-            #Added Int
-            #Added Above Line to attempt to fix the problem with Project donations not updating
+            # Project.objects.all().filter(id=project_id).update(progress=F('progress') + int(donation))
         return messages, donations_list
         #Changed return statement to add donations list I just created
 

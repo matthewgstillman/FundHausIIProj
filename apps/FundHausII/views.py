@@ -90,13 +90,15 @@ def project(request, id):
     print "Current User: {}".format(currentuser)
     # userdonations = User.objects.donations.all().filter(gte=1)
     # donations = Project.objects.donations.all().filter(id=id)
-    project = Project.objects.all().filter(id=id)
+    project = Project.objects.get(id=id)
     print "Project: {}".format(project)
-    projects = Project.objects.all()
-    donations = Donation.objects.all()
+    donations = Donation.objects.filter(campaign_id = id)
     print "Donations: {}".format(donations)
-    donations_sum = Donation.objects.all().filter(campaign__id=id).aggregate(Sum('amount'))
+    donations_sum = Donation.objects.all().filter(campaign__id=id).aggregate(Sum('amount'))['amount__sum']
     print "Donation Sum: {}".format(donations_sum)
+    if not donations_sum:
+        donations_sum = 0
+    percentage = (float(donations_sum) / project.goal) * 100      
     # project_id = project.id
     # print "Projects: {}".format(projects)
     # project_id = project.id
@@ -104,9 +106,9 @@ def project(request, id):
     context={
         'donations': donations,
         'donations_sum': donations_sum,
-        'projects': projects,
         'project': project,
         'project_id': project_id,
+        'percentage': percentage,
         # 'userdonations': userdonations,
         'users': users,
         'id': id
@@ -123,6 +125,8 @@ def projects(request):
     return render(request, 'fundHausII/projects.html', context)
 
 def donate(request, id):
+    if request.method == 'POST':
+       return newdonation(request, id)
     user_id = request.session['id']
     print "User ID: {}".format(user_id) 
     project_id = id
@@ -136,7 +140,7 @@ def donate(request, id):
     }
     return render(request, 'fundHausII/donate.html', context)
 
-def newdonation(request):
+def newdonation(request, id):
     user_id = int(request.session['id'])
     #Added int() to see if that solves the problems
     print "User ID: {}".format(user_id)
