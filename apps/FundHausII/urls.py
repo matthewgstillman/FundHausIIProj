@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^logout$', views.logout),
     url(r'^register$', views.register),
     url(r'^newdonation$', views.newdonation),
+    url(r'^user/(?P<user_id>\d+)$', views.user),
     url(r'^project/(?P<id>\d+)$', views.project),
     url(r'^project/(?P<id>\d+)/donate$', views.donate)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

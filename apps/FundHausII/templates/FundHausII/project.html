@@ -44,32 +44,41 @@
           {% endfor %}
         {% endif %}
     <div class="container">
-        <h6>Current Project: {{ project}} </h6>
-        <h6>Logged In User: {{ request.session.name }}</h6>
-        <h6>Logged In User ID: {{ request.session.id }}</h6>
-        <h6>Project ID: {{ project.id }}</h6>
+        {% if funded_message %}
+        <br>
+        <br>
+        <h1>{{ funded_message.0 }}</h1>
+        <br>
+        <br>
+        {% endif %}
         <h1>Project Title: {{ project.title }}</h1>
         <h3>About: {{ project.about }}</h3>
         <h3>Founded By: {{ project.founder.firstName }} {{ project.founder.lastName }}</h3>
         <h3>Project Goal: ${{ project.goal }}</h3>
+        {% if donations_count > 0 %}
+        <h3>Backers: {{ donations_count }}</h3>
+        {% endif %}
         <h3>Progress: ${{ donations_sum }}  of ${{ project.goal }}</h3>
+        {% if percentage > 0 %}
         <div class="progress">
         <div class="progress-bar" role="progressbar" aria-valuenow="{{ project.progress }}"
         aria-valuemin="0" aria-valuemax="100" style="width:{{ percentage }}%">
             {{ percentage }}%
         </div>
         </div>
-        <img src="/media/{{ project.picture }}" width="240">
+        {% endif %}
+        <img src="/media/{{ project.picture }}" width="1000" align="middle">
+        <br>
+        {% if donations.count > 0 %}
         <h1>Donations</h1>
           {% for donation in donations %}
-            <h1>Donor: {{ donation.donor.firstName }} {{ donation.donor.lastName }}</h1>
-            <h1>Project Donated To: {{ donation.campaign.title }}</h1>
-            <h1>Donation Amount: ${{ donation.amount }} </h1>
+            <h4><a href="/user/{{user.id}}"> {{ donation.donor.firstName }} {{ donation.donor.lastName }} -  ${{ donation.amount }}</a></h4>
+            <!--Added user_id parameter with link-->
           {% endfor %} 
+        {% endif %}
         </div>
         <h1><a href="/project/{{project.id}}/donate">Donate To Project</a></h1>
     <br>
-    
     <a href="/projects">Go Back To Projects</a>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>

@@ -147,7 +147,7 @@ class ProjectManager(models.Manager):
 
         if not messages:
             print "Success! No Errors!"
-            Project.objects.create(title=title, founder=founder, about=about, goal=goal, progress=0, percentage=0, picture=postData['picture'])
+            Project.objects.create(title=title, founder=founder, about=about, goal=goal, progress=0, picture=postData['picture'])
             #Cannot assign "u'Von Miller'": "Project.founder" must be a "User" instance.
             return None
         return messages
@@ -158,7 +158,6 @@ class Project(models.Model):
     about = models.CharField(max_length=1000)
     goal = models.IntegerField(default=0)
     progress = models.IntegerField(default=0)
-    percentage = models.FloatField(null=True, blank=True)
     picture = models.ImageField(upload_to="project_image", blank=True)
     # Changed Above Line to "media/project_image" instead of just /project_image
     created_at = models.DateTimeField(auto_now_add=True)
@@ -166,7 +165,7 @@ class Project(models.Model):
     objects = ProjectManager()
 
     def __unicode__(self):
-        return "id: " + str(self.id) + ", Project Title: " + str(self.title) + ", About Project: " + str(self.about) + ", Project Picture: " + str(self.picture) + ", Goal: $" + str(self.goal) + ", Progress: $" + str(self.progress) + ", Percentage:" + str(self.percentage)
+        return "id: " + str(self.id) + ", Project Title: " + str(self.title) + ", About Project: " + str(self.about) + ", Project Picture: " + str(self.picture) + ", Goal: $" + str(self.goal) + ", Progress: $" + str(self.progress)
 
 
 # Brand New Donation Model To Test Out
@@ -193,25 +192,9 @@ class DonationManager(models.Manager):
         if not messages:
             # donations_list.append("Current User: " + current_user +  ", Current Donation: " + donation + "Current Project: " + current_project)
             self.create(donor=current_user, amount=donation, campaign=current_project)
-            # Project.objects.all().filter(id=project_id).update(progress=F('progress') + int(donation))
+            Project.objects.all().filter(id=project_id).update(progress=F('progress') + int(donation))
         return messages, donations_list
         #Changed return statement to add donations list I just created
-
-    # Added get donations field
-    def getdonations(self, donations, project_id):
-        if project_donation_total == None:
-            project_donation_total = 0
-            return donations
-        else:
-            for i in dontions:
-                if typeof(i) == int:
-                    project_donation_total = project_donation_total + donations[i]  
-                    return donations, project_donation_total
-                else:
-                    project_donation_total = project_donation_total
-                    return donations, project_donation_total
-
-
 
 class Donation(models.Model):
     donor = models.ForeignKey(User, related_name="user_donor")

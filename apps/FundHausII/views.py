@@ -92,20 +92,29 @@ def project(request, id):
     # donations = Project.objects.donations.all().filter(id=id)
     project = Project.objects.get(id=id)
     print "Project: {}".format(project)
-    donations = Donation.objects.filter(campaign_id = id)
+    donations = Donation.objects.filter(campaign_id=id)
     print "Donations: {}".format(donations)
+    donations_count = donations.count()
+    print "Donations Count: {}".format(donations_count)
     donations_sum = Donation.objects.all().filter(campaign__id=id).aggregate(Sum('amount'))['amount__sum']
     print "Donation Sum: {}".format(donations_sum)
     if not donations_sum:
         donations_sum = 0
-    percentage = (float(donations_sum) / project.goal) * 100      
+    percentage = (float(donations_sum) / project.goal) * 100
+    print "Percentage: {}".format(percentage)
+    funded_message = []
+    if percentage >= 100:
+        funded_message.append("Conratulations! Your Project Is Officially Funded" )
+        print "Funded Message: {}".format(funded_message)    
     # project_id = project.id
     # print "Projects: {}".format(projects)
     # project_id = project.id
     # print "Project ID: {}".format(project_id)
     context={
         'donations': donations,
+        'donations_count': donations_count,
         'donations_sum': donations_sum,
+        'funded_message': funded_message,
         'project': project,
         'project_id': project_id,
         'percentage': percentage,
@@ -117,6 +126,8 @@ def project(request, id):
 
 def projects(request):
     projects = Project.objects.all()
+    # project_id = id
+    # print "Project ID: ".format(project_id)
     users = User.objects.all()
     context={
         'projects': projects,
@@ -142,7 +153,6 @@ def donate(request, id):
 
 def newdonation(request, id):
     user_id = int(request.session['id'])
-    #Added int() to see if that solves the problems
     print "User ID: {}".format(user_id)
     project_id = id
     print "Project ID: {}".format(project_id)
@@ -158,8 +168,6 @@ def newdonation(request, id):
     print "Users: {}".format(users)
     all_donations = Donation.objects.all()
     if request.method == 'POST':
-        #Changing 'user_id' to request.session['id'] and 'project_id to id
-        #Update - Above line didn't fix problem
         messages = Donation.objects.donate(request.POST, user_id, project_id)
     if not messages:
         print "No Errors! Success!"
@@ -172,11 +180,9 @@ def newdonation(request, id):
             'project_id': project_id,
             'users': users,
             'all_donations': all_donations,
-            # 'current_project': current_project,
             'donor': donor,
             'all_donations:': all_donations,
             'user_id': user_id
-            # 'donation_id': donation_id
         }
         return redirect('/projects', context)
     else:
@@ -189,7 +195,7 @@ def trending(request):
     context={
         'trending_projects': trending_projects
     }
-    return render(request, 'fundHausII/projects.html', context)
+    return render(request, 'fundHausII/trending.html', context)
 
 def createproject(request):
     name = request.session['name']
@@ -209,6 +215,14 @@ def createproject(request):
         'last_name': last_name,
     }
     return render(request, 'fundHausII/createProject.html', context)
+
+def user(request, user_id):
+    user = User.objects.get(id=user_id)
+    print "User: {}".format(user)
+    context = {
+
+    }
+    return render(request, 'fundHausII/users.html', context)
 
 def logout(request):
     request.session.clear()
