@@ -37,34 +37,18 @@
     </ul>
   </div>
 </nav>
-        <h1>Welcome to fundHaus {{request.session.name}}!</h1>
         {% if messages %}
           {% for message in messages %}
             <p>{{ message }}</p>
           {% endfor %}
         {% endif %}
     <div class="container">
-  <h2>Users</h2>           
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Email</th>
-        <th>Password</th>
-      </tr>
-    </thead>
-    {% for user in users %}
-        <tr>
-            <td>{{ user.firstName }}</td>
-            <td>{{ user.lastName }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.password }}</td>
-        </tr>
-    {% endfor %}
-  </table>
+  <h2>Donations Made By {{ user.firstName }} {{ user.lastName }}</h2>
+  <img src="/media/{{ user.picture }}" width="100%" align="middle">        
+  {% for donation in user_donations %}
+  <h3>${{ donation.amount}} - {{ donation.campaign.title }} - {{ donation.created_at|timesince }} ago</h3>
+  {% endfor %}
 </div>
-
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>

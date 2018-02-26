@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from .models import User, Project, Donation
 from django.db.models import Sum, Avg
+from datetime import date, time
 # Create your views here.
 def index(request):
     return render(request, 'FundHausII/index.html')
@@ -16,8 +17,10 @@ def register(request):
         # fetch user id and name via email
         user_list = User.objects.all().filter(email=request.POST['email'])
         request.session['id'] = user_list[0].id
+        request.session['first_name'] = str(user_list[0].firstName)
+        request.session['last_name'] = str(user_list[0].lastName)
         request.session['name'] = str(user_list[0].firstName) +  " " + str(user_list[0].lastName)
-        return redirect('/users')
+        return redirect('/allusers')
     else:
         request.session['messages'] = messages
         print messages
@@ -49,20 +52,20 @@ def signin(request):
 def signup(request):
     return render(request, 'FundHausII/signUp.html')
 
-def users(request):
+def allusers(request):
     users = User.objects.all()
     context={
         'users': users
     }
-    return render(request, 'fundHausII/users.html', context)
+    return render(request, 'fundHausII/allusers.html', context)
 
 def newproject(request):
     #print request.POST
     first_name = request.session['first_name']
     print "First Name: {}",format(first_name)
     name = request.session['name']
-    # currentuser = request.session['name']
-    # print currentuser
+    currentuser = request.session['name']
+    print currentuser
     if request.method == 'POST':
         print request.POST
         messages = Project.objects.createproject(request.POST, first_name)
@@ -86,6 +89,9 @@ def project(request, id):
     name = request.session['name']
     print "{} is the name I Want to print!".format(name)
     users = User.objects.all()
+    print "Users: {}".format(users)
+    # user_pic_id = Project.objects.get(project_donated__id=id)
+    # print "User Pic ID: {}".format(user_pic_id)
     currentuser = User.objects.all().filter(id=request.session['id'])
     print "Current User: {}".format(currentuser)
     # userdonations = User.objects.donations.all().filter(gte=1)
@@ -119,19 +125,29 @@ def project(request, id):
         'project_id': project_id,
         'percentage': percentage,
         # 'userdonations': userdonations,
+        # 'user': user,
         'users': users,
         'id': id
     }
     return render(request, 'fundHausII/project.html', context)
 
 def projects(request):
+    name = request.session['name']
+    print "Name: {}".format(name)
+    # first_name = request.session['first_name']
+    # print "First Name: {}".format(first_name)
+    # last_name = request.session['last_name']
+    # print "Last Name: {}".format(last_name)
     projects = Project.objects.all()
     # project_id = id
     # print "Project ID: ".format(project_id)
     users = User.objects.all()
     context={
         'projects': projects,
-        'users': users
+        'users': users, 
+        'name': name,
+        # 'first_name': first_name,
+        # 'last_name': last_name
     }
     return render(request, 'fundHausII/projects.html', context)
 
@@ -160,10 +176,10 @@ def newdonation(request, id):
     # print "Current Project: {}".format(current_project)
     name = request.session['name']
     print "Name: {}".format(name)
-    first_name = request.session['first_name']
-    print "First Name: {}".format(first_name)
-    last_name = request.session['last_name']
-    print "Last Name: {}".format(last_name)
+    # first_name = request.session['first_name']
+    # print "First Name: {}".format(first_name)
+    # last_name = request.session['last_name']
+    # print "Last Name: {}".format(last_name)
     users = User.objects.all()
     print "Users: {}".format(users)
     all_donations = Donation.objects.all()
@@ -175,7 +191,7 @@ def newdonation(request, id):
         current_donation = request.POST['donation']
         print "Current Donation is: {}".format(current_donation)
         context = {
-            'donations_list': donations_list,
+            # 'donations_list': donations_list,
             'name': name,
             'project_id': project_id,
             'users': users,
@@ -191,9 +207,11 @@ def newdonation(request, id):
     return redirect('/projects')
 
 def trending(request):
-    trending_projects = Project.objects.all().order_by('goal')
+    projects = Project.objects.all()
+    trending_projects = Project.objects.all().order_by('-created_at')
     context={
-        'trending_projects': trending_projects
+        'trending_projects': trending_projects,
+        'projects': projects,
     }
     return render(request, 'fundHausII/trending.html', context)
 
@@ -205,10 +223,6 @@ def createproject(request):
     last_name = request.session['last_name']
     print "Last Name: {}".format(last_name)
     print "{} is the Logged In user".format(name)
-    first_name = request.session['first_name']
-    print "First Name: {}".format(first_name)
-    last_name = request.session['last_name']
-    print "Last Name: {}".format(last_name)
     context={
         'name': name,
         'first_name': first_name,
@@ -217,12 +231,21 @@ def createproject(request):
     return render(request, 'fundHausII/createProject.html', context)
 
 def user(request, user_id):
+    projects_donated_to = Project.objects.all().filter(project_donated__id=user_id)
+    print "Projects Donated To: {}".format(projects_donated_to)
     user = User.objects.get(id=user_id)
     print "User: {}".format(user)
+    user_donations = Donation.objects.all().filter(donor_id=user_id)
+    print "User Donations: {}".format(user_donations)
+    users = User.objects.all()
+    # print "Users: {}".format(users)
     context = {
-
+        'user': user,
+        'users': users,
+        'user_donations': user_donations,
+        'projects_donated_to': projects_donated_to
     }
-    return render(request, 'fundHausII/users.html', context)
+    return render(request, 'fundHausII/user.html', context)
 
 def logout(request):
     request.session.clear()

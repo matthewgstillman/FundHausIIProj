@@ -52,7 +52,8 @@
         <br>
         {% endif %}
         <h1>Project Title: {{ project.title }}</h1>
-        <h3>About: {{ project.about }}</h3>
+        <img src="/media/{{ project.picture }}" width="100%" align="middle">
+        <h3>About: {{ project.about }} - {{ project.created_at|date:"M d Y" }}</h3>
         <h3>Founded By: {{ project.founder.firstName }} {{ project.founder.lastName }}</h3>
         <h3>Project Goal: ${{ project.goal }}</h3>
         {% if donations_count > 0 %}
@@ -67,13 +68,16 @@
         </div>
         </div>
         {% endif %}
-        <img src="/media/{{ project.picture }}" width="1000" align="middle">
-        <br>
         {% if donations.count > 0 %}
         <h1>Donations</h1>
           {% for donation in donations %}
-            <h4><a href="/user/{{user.id}}"> {{ donation.donor.firstName }} {{ donation.donor.lastName }} -  ${{ donation.amount }}</a></h4>
-            <!--Added user_id parameter with link-->
+            <h3><a href="/user/{{donation.donor.id}}"> {{ donation.donor.firstName }} {{ donation.donor.lastName }} -  ${{ donation.amount }} - {{ donation.created_at|timesince }} ago
+            {% for user in users%}
+            {% if user.id == donation.donor.id %}
+            <img src="/media/{{ user.picture }}" width="100" align="middle"></a>
+            {% endif%}
+            {% endfor %}
+            </h3>
           {% endfor %} 
         {% endif %}
         </div>

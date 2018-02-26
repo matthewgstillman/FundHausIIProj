@@ -45,7 +45,7 @@
       
     {% for project in project %}
     <div class="container">
-        <h1>Donate To {{ project.title }}</h1>
+        <h1>Donate To {{ project.title }}, {{ request.session.name }}</h1>
         <h3>Project Title: {{ project.title }}</h3>
         <h3>About: {{ project.about }}</h3>
         <h3>Project Goal: ${{ project.goal }}</h3>

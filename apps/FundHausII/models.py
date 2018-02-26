@@ -58,6 +58,8 @@ class UserManager(models.Manager):
             if len(str(userName)) < 4:
                 messages.append("Error! User name must be at least 4 characters long!")
 
+            picture = postData['picture']
+
             email = postData['email']
             if len(str(email)) < 1:
                 messages.append("Error! Email must not be blank!")
@@ -88,7 +90,8 @@ class UserManager(models.Manager):
                 # password = password
                 print "Create User"
                 print hashed_pw
-                User.objects.create(firstName=firstName, lastName=lastName, userName=userName, email=email, password=hashed_pw)
+                #Added Picture field for user
+                User.objects.create(firstName=firstName, lastName=lastName, userName=userName, picture=picture, email=email, password=hashed_pw)
                 print hashed_pw
                 print User.objects.all()
                 return None
@@ -98,6 +101,8 @@ class User(models.Model):
     firstName = models.CharField(max_length=50)
     lastName = models.CharField(max_length=50)
     userName = models.CharField(max_length=50)
+    picture = models.ImageField(upload_to="user_image", blank=True)
+    #Added Picture for User
     email = models.CharField(max_length=75)
     password = models.CharField(max_length=25)
     pwConfirm = models.CharField(max_length=25)
@@ -107,7 +112,7 @@ class User(models.Model):
 # Create your models here.
 
     def __unicode__(self):
-        return "id: " + str(self.id) + ", First Name: " + str(self.firstName) + ", Last Name: " + str(self.lastName) + ", Username: " + str(self.userName) + ", Email: " + str(self.email)+ ", Password:" + str(self.password)
+        return "id: " + str(self.id) + ", First Name: " + str(self.firstName) + ", Last Name: " + str(self.lastName) + ", Username: " + str(self.userName) +  ", Picture:" + str(self.picture) + ", Email: " + str(self.email)+ ", Password:" + str(self.password)
 
 class ProjectManager(models.Manager):
     def createproject(self, postData, first_name):
@@ -186,20 +191,22 @@ class DonationManager(models.Manager):
         donation = postData['donation']
 
         #New code added 
-        donations_list = []
+        # donations_list = []
         if len(str(donation)) < 1:
             messages.append("Donation must be an amount greater than 0!")
         if not messages:
             # donations_list.append("Current User: " + current_user +  ", Current Donation: " + donation + "Current Project: " + current_project)
             self.create(donor=current_user, amount=donation, campaign=current_project)
             Project.objects.all().filter(id=project_id).update(progress=F('progress') + int(donation))
-        return messages, donations_list
-        #Changed return statement to add donations list I just created
+        return messages
+        #Changed return statement to REMOVE donations list I just created
 
 class Donation(models.Model):
     donor = models.ForeignKey(User, related_name="user_donor")
     amount = models.IntegerField(default=0, null=True)
     campaign = models.ForeignKey(Project, related_name="project_donated")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     objects = DonationManager()
 
     def __unicode__(self):
